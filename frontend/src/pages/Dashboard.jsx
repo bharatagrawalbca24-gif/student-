@@ -5,7 +5,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     // In a real app we'd fetch from backend, here we mock it to show immediate UI
-    fetch('http://localhost:5000/api/dashboard')
+    fetch(`${import.meta.env.VITE_API_URL || ''}/api/dashboard`)
       .then(res => res.json())
       .then(data => setData(data))
       .catch(err => console.error("Failed to fetch backend data", err));

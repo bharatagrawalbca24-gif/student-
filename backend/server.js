@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const path = require('path');
 
 dotenv.config();
 
@@ -9,7 +10,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: process.env.CLIENT_URL || '*' })); // Allow requests from Vercel deployed app (or all if not set)
 app.use(express.json());
 
 // Models
@@ -17,6 +18,8 @@ const Course = require('./models/Course');
 const Assignment = require('./models/Assignment');
 const Resource = require('./models/Resource');
 const Session = require('./models/Session');
+const Topic = require('./models/Topic');
+const Alumni = require('./models/Alumni');
 
 // Mock Data Storage (Fallback if DB not used)
 let mockData = {
@@ -44,6 +47,10 @@ let mockData = {
         { id: 1, title: 'OS Concepts 10th Ed.', type: 'Book', subject: 'Operating Systems', uploadedBy: 'Prof. Alan', url: '#' },
         { id: 2, title: 'CN Chapter 3 Notes', type: 'Note', subject: 'Computer Networks', uploadedBy: 'Alex Doe', url: '#' },
         { id: 3, title: 'SQL Best Practices', type: 'Video', subject: 'Database Systems', uploadedBy: 'Sarah Jenkins', url: '#' }
+    ],
+    topics: [
+        { id: 1, title: 'Best practices for React components', author: 'Alex Doe', replies: 12, tags: ['React', 'Frontend'] },
+        { id: 2, title: 'How to prepare for System Design interviews', author: 'Sarah Jenkins', replies: 8, tags: ['System Design', 'Interview'] }
     ]
 };
 
@@ -99,7 +106,20 @@ app.get('/api/sessions', async (req, res) => {
     res.json(mockData.sessions);
 });
 
-app.get('/api/alumni', (req, res) => res.json(mockData.alumni));
+app.get('/api/alumni', async (req, res) => {
+    if (isDbConnected()) {
+        try {
+            const alumni = await Alumni.find();
+            return res.json(alumni.map(a => ({
+                 id: a._id.toString(),
+                 name: a.name,
+                 role: a.role,
+                 expertise: a.expertise
+            })));
+        } catch(e) { console.error(e) }
+    }
+    res.json(mockData.alumni);
+});
 
 app.get('/api/assignments', async (req, res) => {
     if (isDbConnected()) {
@@ -152,6 +172,102 @@ app.get('/api/resources', async (req, res) => {
     }
     res.json(mockData.resources);
 });
+
+app.post('/api/resources', async (req, res) => {
+    if (isDbConnected()) {
+        try {
+            const newRes = await Resource.create({
+                title: req.body.title,
+                type: req.body.type,
+                uploadedBy: req.body.uploadedBy || 'Alex Doe',
+                url: '#'
+            });
+            return res.json({ id: newRes._id.toString(), ...req.body, uploadedBy: newRes.uploadedBy });
+        } catch(e) { console.error("Could not upload via mongoose fallback to mock", e) }
+    }
+    const newResource = {
+        id: Date.now(),
+        ...req.body,
+        uploadedBy: req.body.uploadedBy || 'Alex Doe',
+        url: '#'
+    };
+    mockData.resources.push(newResource);
+    res.json(newResource);
+});
+
+app.post('/api/sessions/:id/book', async (req, res) => {
+    if (isDbConnected()) {
+        try {
+            const updated = await Session.findByIdAndUpdate(req.params.id, { status: 'Booked' }, { new: true });
+            if (updated) {
+                return res.json({ id: updated._id.toString(), status: updated.status, mentor: updated.mentor, date: updated.date, type: updated.type, title: updated.title });
+            }
+        } catch(e) { console.error("Session update failed, fallback to mock") }
+    }
+    const id = parseInt(req.params.id);
+    const session = mockData.sessions.find(s => s.id === id);
+    if (session) {
+        session.status = 'Booked';
+        return res.json(session);
+    }
+    res.status(404).json({ error: 'Session not found' });
+});
+
+app.get('/api/topics', async (req, res) => {
+    if (isDbConnected()) {
+        try {
+            const topics = await Topic.find().sort({ createdAt: -1 });
+            return res.json(topics.map(t => ({
+                id: t._id.toString(),
+                title: t.title,
+                author: t.author,
+                replies: t.replies,
+                tags: t.tags
+            })));
+        } catch(e) { console.error(e) }
+    }
+    res.json(mockData.topics);
+});
+
+app.post('/api/topics', async (req, res) => {
+    if (isDbConnected()) {
+        try {
+            const newTopic = await Topic.create({
+                title: req.body.title,
+                author: 'Alex Doe',
+                tags: req.body.tags || []
+            });
+            return res.json({
+                id: newTopic._id.toString(),
+                title: newTopic.title,
+                author: newTopic.author,
+                replies: newTopic.replies,
+                tags: newTopic.tags
+            });
+        } catch(e) { console.error(e) }
+    }
+    const newTopic = {
+        id: Date.now(),
+        title: req.body.title,
+        author: 'Alex Doe',
+        replies: 0,
+        tags: req.body.tags || []
+    };
+    mockData.topics.unshift(newTopic);
+    res.json(newTopic);
+});
+
+app.post('/api/alumni/:id/message', (req, res) => {
+    res.json({ success: true, message: 'Message sent successfully!' });
+});
+
+app.post('/api/alumni/:id/meet', (req, res) => {
+    res.json({ success: true, message: 'Meeting requested successfully!' });
+});
+
+// We no longer serve frontend via static in production since we use Vercel for the frontend.
+// The code below is removed. Render will act SOLELY as an API server.
+app.get('/', (req, res) => { res.send("Student Dashboard API is Running.") });
 
 app.listen(PORT, () => {
     console.log(`Server is running on port: ${PORT}`);

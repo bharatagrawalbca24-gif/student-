@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Attendance = () => {
   const [attendanceData, setAttendanceData] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/attendance')
+    fetch(`${import.meta.env.VITE_API_URL || ''}/api/attendance`)
       .then(res => res.json())
       .then(data => setAttendanceData(data))
       .catch(() => {
@@ -25,7 +26,7 @@ const Attendance = () => {
     <div className="animate-fade-in">
       <div className="flex items-center justify-between" style={{ marginBottom: '2rem' }}>
         <h1 className="section-title" style={{ margin: 0 }}>Attendance Tracker</h1>
-        <button className="btn-secondary">Download Report</button>
+        <button onClick={() => toast.success("Downloading attendance report...")} className="btn-secondary">Download Report</button>
       </div>
 
       <div className="flex-col gap-6">

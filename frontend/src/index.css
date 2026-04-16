@@ -1,23 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;800&display=swap');
 
 :root {
-  --bg-primary: #faf9f6; /* Off-white / warm pearl */
-  --bg-secondary: #f1eve9; /* Soft sand */
-  --text-primary: #2c2a29; /* Soft charcoal */
-  --text-secondary: #6e6b68; /* Warm gray */
+  --bg-primary: #09090b; /* Really dark slate */
+  --bg-secondary: #18181b; 
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
   
-  /* Calm Sage Green and soft earthy tones */
-  --accent-primary: #879982; /* Sage green */
-  --accent-secondary: #a1b09d; /* Lighter sage */
-  --accent-danger: #d98a8a; /* Muted coral */
-  --accent-success: #879982; 
-  --accent-warning: #e0b47b; /* Soft ochre */
+  /* Vibrant Neon accents */
+  --accent-primary: #8b5cf6; /* Violet */
+  --accent-secondary: #d946ef; /* Fuchsia */
+  --accent-danger: #f43f5e;
+  --accent-success: #10b981; 
+  --accent-warning: #fbbf24; 
 
-  --glass-border: rgba(255, 255, 255, 0.8);
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-shadow: 0 16px 40px rgba(0, 0, 0, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
   
-  --transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -32,10 +32,10 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  /* Very soft, grounding gradients */
+  /* Deep vibrant glowing orb backgrounds */
   background-image: 
-    radial-gradient(circle at 10% -20%, rgba(135, 153, 130, 0.1), transparent 40%),
-    radial-gradient(circle at 90% +110%, rgba(224, 180, 123, 0.08), transparent 50%);
+    radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(217, 70, 239, 0.15), transparent 25%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

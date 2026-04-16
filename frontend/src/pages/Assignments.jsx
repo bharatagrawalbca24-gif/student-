@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { CheckCircle, Clock } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Assignments = () => {
   const [assignments, setAssignments] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/assignments')
+    fetch(`${import.meta.env.VITE_API_URL || ''}/api/assignments`)
       .then(res => res.json())
       .then(data => setAssignments(data))
       .catch(err => console.error("Failed to fetch assignments", err));
   }, []);
 
   const handleSubmit = (id) => {
-    fetch(`http://localhost:5000/api/assignments/${id}/submit`, { method: 'POST' })
+    fetch(`${import.meta.env.VITE_API_URL || ''}/api/assignments/${id}/submit`, { method: 'POST' })
       .then(res => res.json())
       .then(updated => {
         setAssignments(prev => prev.map(a => a.id === id ? updated : a));
-      });
+        toast.success("Assignment submitted successfully!");
+      })
+      .catch(() => toast.error("Failed to submit assignment"));
   };
 
   return (
