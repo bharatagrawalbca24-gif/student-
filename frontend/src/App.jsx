@@ -13,8 +13,10 @@ import VideoRoom from './pages/VideoRoom';
 
 function App() {
   return (
-    <div className="app-container">
-      <Toaster position="top-right" toastOptions={{
+    <>
+      <div className="app-bg"></div>
+      <div className="app-container">
+        <Toaster position="top-right" toastOptions={{
         style: {
           background: 'var(--glass-bg)',
           color: 'var(--text-primary)',
@@ -36,7 +38,8 @@ function App() {
           <Route path="/meet/:roomId" element={<VideoRoom />} />
         </Routes>
       </main>
-    </div>
+      </div>
+    </>
   );
 }
 

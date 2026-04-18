@@ -27,13 +27,13 @@ const DoubtSessions = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="animate-fade-in">
-      <div className="flex items-center justify-between" style={{ marginBottom: '2rem' }}>
-        <h1 className="section-title" style={{ margin: 0 }}>Doubt Sessions</h1>
-        <button onClick={() => toast("Contacting mentor for custom slot...", { icon: '📅' })} className="btn-primary">Request Custom Slot</button>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="animate-fade-in delay-100">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="section-title text-gradient m-0">Doubt Sessions</h1>
+        <button onClick={() => toast("Contacting mentor for custom slot...", { icon: '📅' })} className="btn btn-primary">Request Custom Slot</button>
       </div>
 
-      <div className="flex-col gap-4">
+      <div className="flex-col gap-6">
         <AnimatePresence>
           {sessions.map((session, idx) => (
             <motion.div 
@@ -42,36 +42,29 @@ const DoubtSessions = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: idx * 0.1 }}
               key={session.id} 
-              className="glass-panel items-center justify-between flex" 
-              style={{ padding: '1.5rem' }}
+              className="card items-center justify-between flex animate-slide-up" 
+              style={{ animationDelay: `${0.1 + idx * 0.1}s` }}
             >
               <div>
-                <div className="flex items-center gap-3">
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{session.title}</h3>
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="text-xl font-bold">{session.title}</h3>
                   {session.status === 'Booked' && (
-                    <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.5rem', borderRadius: '4px', background: 'rgba(16,185,129,0.2)', color: 'var(--accent-success)'}}>BOOKED</span>
+                    <span className="badge badge-success">BOOKED</span>
                   )}
                 </div>
-                <p style={{ fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                  Mentor: <strong>{session.mentor}</strong> • <Calendar size={14}/> {new Date(session.date).toLocaleString()}
+                <p className="text-sm flex items-center gap-2 text-secondary">
+                  Mentor: <strong className="text-primary">{session.mentor}</strong> • <Calendar size={14} className="text-muted" /> {new Date(session.date).toLocaleString()}
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <span style={{ 
-                  padding: '0.25rem 0.75rem', 
-                  borderRadius: '99px', 
-                  background: session.type === '1-on-1' ? 'rgba(139, 92, 246, 0.2)' : 'rgba(59, 130, 246, 0.2)',
-                  color: session.type === '1-on-1' ? 'var(--accent-primary)' : 'var(--accent-secondary)',
-                  fontSize: '0.8rem',
-                  fontWeight: '600'
-                }}>
+                <span className={`badge ${session.type === '1-on-1' ? 'badge-primary' : 'badge-warning'}`}>
                   {session.type}
                 </span>
                 
                 {session.status !== 'Booked' ? (
-                  <button onClick={() => handleBook(session.id)} className="btn-secondary">Book Session</button>
+                  <button onClick={() => handleBook(session.id)} className="btn btn-secondary">Book Session</button>
                 ) : (
-                  <button onClick={() => navigate(`/meet/session-${session.id}`)} className="btn-primary flex items-center gap-2"><Video size={16}/> Join Meeting</button>
+                  <button onClick={() => navigate(`/meet/session-${session.id}`)} className="btn btn-primary"><Video size={16}/> Join Meeting</button>
                 )}
               </div>
             </motion.div>

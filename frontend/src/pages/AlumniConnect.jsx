@@ -45,63 +45,62 @@ const AlumniConnect = () => {
   );
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="animate-fade-in">
-      <div className="flex items-center justify-between" style={{ marginBottom: '2rem' }}>
-        <h1 className="section-title" style={{ margin: 0 }}>Alumni Connect</h1>
-        <div style={{ position: 'relative' }}>
-          <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }} />
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="animate-fade-in delay-100">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="section-title text-gradient m-0">Alumni Connect</h1>
+        <div className="relative w-full max-w-sm">
+          <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
           <input 
             type="text" 
             placeholder="Search alumni by name, role..." 
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            style={{ 
-              padding: '0.75rem 0.75rem 0.75rem 2.5rem', 
-              borderRadius: '8px', 
-              border: '1px solid var(--glass-border)', 
-              background: 'var(--glass-bg)', 
-              color: 'var(--text-primary)', 
-              outline: 'none',
-              width: '300px',
-              transition: 'all 0.3s'
-            }}
+            className="w-full"
+            style={{ paddingLeft: '2.5rem' }}
           />
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+      <div className="grid" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
         <AnimatePresence>
-          {filteredAlumni.map((alumni) => (
+          {filteredAlumni.map((alumni, idx) => (
             <motion.div 
               layout
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               key={alumni.id} 
-              className="glass-panel" 
-              style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}
+              className="card flex-col gap-4 animate-slide-up"
+              style={{ animationDelay: `${0.1 + idx * 0.1}s` }}
             >
               <div className="flex items-center gap-4">
-                <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.25rem', color: '#fff' }}>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-xl text-white shadow-lg" 
+                     style={{ background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))' }}>
                   {alumni.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 style={{ fontSize: '1.1rem' }}>{alumni.name}</h3>
-                  <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}><Briefcase size={12} style={{ display: 'inline', marginRight: '4px' }}/>{alumni.role}</p>
+                  <h3 className="text-xl font-bold">{alumni.name}</h3>
+                  <p className="text-sm text-secondary flex items-center mt-1">
+                    <Briefcase size={14} className="mr-1 text-muted" /> {alumni.role}
+                  </p>
                 </div>
               </div>
               
               <div className="flex gap-2 flex-wrap">
                 {alumni.expertise.map((skill, i) => (
-                  <span key={i} style={{ padding: '0.2rem 0.5rem', background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.2)', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  <span key={i} className="badge badge-primary">
                     {skill}
                   </span>
                 ))}
               </div>
 
-              <div className="flex justify-between mt-auto" style={{ paddingTop: '1rem', borderTop: '1px solid var(--glass-border)' }}>
-                <button onClick={() => handleMessage(alumni.id)} className="btn-secondary flex items-center gap-2" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}><MessageCircle size={14}/> Message</button>
-                <button onClick={() => handleMeet(alumni.id)} className="btn-primary flex items-center gap-2" style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}><Calendar size={14}/> Book Meet</button>
+              <div className="flex justify-between mt-auto pt-4 border-t border-white/10">
+                <button onClick={() => handleMessage(alumni.id)} className="btn btn-secondary text-sm">
+                  <MessageCircle size={16}/> Message
+                </button>
+                <button onClick={() => handleMeet(alumni.id)} className="btn btn-primary text-sm">
+                  <Calendar size={16}/> Book Meet
+                </button>
               </div>
             </motion.div>
           ))}

@@ -23,10 +23,10 @@ const Attendance = () => {
   const calculatePercentage = (attended, total) => Math.round((attended / total) * 100);
 
   return (
-    <div className="animate-fade-in">
-      <div className="flex items-center justify-between" style={{ marginBottom: '2rem' }}>
-        <h1 className="section-title" style={{ margin: 0 }}>Attendance Tracker</h1>
-        <button onClick={() => toast.success("Downloading attendance report...")} className="btn-secondary">Download Report</button>
+    <div className="animate-fade-in delay-100">
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="section-title text-gradient m-0">Attendance Tracker</h1>
+        <button onClick={() => toast.success("Downloading attendance report...")} className="btn btn-secondary">Download Report</button>
       </div>
 
       <div className="flex-col gap-6">
@@ -35,33 +35,34 @@ const Attendance = () => {
           const isDanger = percentage < 75;
 
           return (
-            <div key={idx} className="glass-panel animate-slide-up" style={{ padding: '1.5rem', animationDelay: `${idx * 0.1}s` }}>
-              <div className="flex justify-between items-center" style={{ marginBottom: '1rem' }}>
+            <div key={idx} className="card animate-slide-up" style={{ animationDelay: `${0.2 + idx * 0.1}s` }}>
+              <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h3 style={{ fontSize: '1.25rem', marginBottom: '0.25rem' }}>{item.subject}</h3>
-                  <p style={{ fontSize: '0.9rem' }}>{item.attendedClasses} / {item.totalClasses} Classes Attended</p>
+                  <h3 className="text-xl font-bold mb-1">{item.subject}</h3>
+                  <p className="text-sm text-secondary">{item.attendedClasses} / {item.totalClasses} Classes Attended</p>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: isDanger ? 'var(--accent-danger)' : 'var(--accent-success)' }}>
+                <div className="text-right">
+                  <div className="text-3xl font-bold" style={{ color: isDanger ? 'var(--accent-danger)' : 'var(--accent-success)' }}>
                     {percentage}%
                   </div>
                 </div>
               </div>
               
               {/* Progress Bar */}
-              <div style={{ width: '100%', height: '8px', background: 'rgba(255, 255, 255, 0.1)', borderRadius: '4px', overflow: 'hidden' }}>
+              <div className="w-full rounded-full overflow-hidden" style={{ height: '8px', background: 'rgba(255, 255, 255, 0.08)' }}>
                 <div style={{ 
                   width: `${percentage}%`, 
                   height: '100%', 
                   background: isDanger ? 'var(--accent-danger)' : 'var(--accent-success)',
-                  transition: 'width 1s ease-out'
+                  transition: 'width 1s cubic-bezier(0.16, 1, 0.3, 1)',
+                  boxShadow: `0 0 10px ${isDanger ? 'rgba(225, 29, 72, 0.5)' : 'rgba(16, 185, 129, 0.5)'}`
                 }} />
               </div>
 
               {isDanger && (
-                <div className="flex items-center gap-2" style={{ marginTop: '1rem', color: 'var(--accent-danger)' }}>
+                <div className="flex items-center gap-2 mt-4 text-sm font-semibold" style={{ color: 'var(--accent-danger)' }}>
                   <AlertCircle size={18} />
-                  <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>Warning: Attendance is below 75% minimum requirement.</span>
+                  <span>Warning: Attendance is below 75% minimum requirement.</span>
                 </div>
               )}
             </div>

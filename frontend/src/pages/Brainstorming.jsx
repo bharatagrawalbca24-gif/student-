@@ -46,15 +46,15 @@ const Brainstorming = () => {
   };
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div className="flex items-center justify-between" style={{ marginBottom: '2rem' }}>
-        <h1 className="section-title" style={{ margin: 0 }}>Brainstorming Space</h1>
-        <button onClick={() => setIsModalOpen(true)} className="btn-primary">+ New Topic</button>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="animate-fade-in delay-100 flex-col" style={{ height: '100%' }}>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="section-title text-gradient m-0">Brainstorming Space</h1>
+        <button onClick={() => setIsModalOpen(true)} className="btn btn-primary">+ New Topic</button>
       </div>
 
-      <div className="flex gap-6" style={{ flex: 1, minHeight: 0 }}>
-        <div className="glass-panel" style={{ flex: 1, padding: '1.5rem', overflowY: 'auto' }}>
-          <h3 style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>Active Discussions</h3>
+      <div className="flex gap-8" style={{ flex: 1, minHeight: 0 }}>
+        <div className="card p-tight flex-col animate-slide-up delay-200" style={{ flex: 1, overflowY: 'auto' }}>
+          <h3 className="text-muted mb-4 font-semibold text-sm uppercase tracking-wider px-2">Active Discussions</h3>
           <div className="flex-col gap-2">
             {topics.map((topic) => (
               <motion.div 
@@ -69,37 +69,37 @@ const Brainstorming = () => {
                   cursor: 'pointer',
                   transition: 'background 0.3s'
                 }}>
-                <h4 style={{ color: activeTopic?.id === topic.id ? 'var(--text-primary)' : 'var(--text-secondary)' }}>{topic.title}</h4>
-                <p style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>{topic.replies} replies</p>
+                <h4 className={`font-semibold ${activeTopic?.id === topic.id ? 'text-primary' : 'text-secondary'}`}>{topic.title}</h4>
+                <p className="text-xs mt-1 text-muted">{topic.replies} replies</p>
               </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="glass-panel flex-col" style={{ flex: 2, padding: '1.5rem' }}>
+        <div className="card flex-col p-loose animate-slide-up delay-300" style={{ flex: 2 }}>
           {activeTopic ? (
             <>
-              <h3 style={{ marginBottom: '1rem' }}>{activeTopic.title}</h3>
-              <div style={{ flex: 1, background: 'rgba(0,0,0,0.2)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem', overflowY: 'auto', border: '1px solid var(--glass-border)' }}>
-                <div style={{ padding: '0.75rem', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '8px', marginBottom: '0.5rem', width: 'fit-content' }}>
-                  <strong style={{ color: 'var(--accent-secondary)', display: 'block', fontSize: '0.8rem' }}>{activeTopic.author}</strong>
-                  Let's discuss this!
+              <h3 className="text-2xl font-bold mb-6">{activeTopic.title}</h3>
+              <div className="flex-col flex-1 bg-black/20 rounded-2xl p-4 mb-6 overflow-y-auto border border-white/5 shadow-inner">
+                <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-2 w-fit max-w-[80%]">
+                  <strong className="text-accent-secondary text-xs block mb-1 uppercase tracking-wider">{activeTopic.author}</strong>
+                  <p className="text-sm">Let's discuss this!</p>
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-3 mt-auto">
                 <input 
                   type="text" 
                   value={message}
                   onChange={e => setMessage(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && sendMessage()}
                   placeholder="Type your message..." 
-                  style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)', outline: 'none' }}
+                  className="w-full"
                 />
-                <button onClick={sendMessage} className="btn-primary flex items-center justify-center"><Send size={18}/></button>
+                <button onClick={sendMessage} className="btn btn-primary flex items-center justify-center p-3 rounded-xl"><Send size={18}/></button>
               </div>
             </>
           ) : (
-             <div style={{flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)'}}>
+             <div className="flex-1 flex items-center justify-center text-secondary text-lg">
                Select a topic or create a new one!
              </div>
           )}
@@ -107,11 +107,11 @@ const Brainstorming = () => {
       </div>
 
       {isModalOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000 }}>
-          <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="glass-panel" style={{ padding: '2rem', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-50">
+          <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="card w-full max-w-sm flex-col gap-6 p-loose">
             <div className="flex justify-between items-center">
-              <h2>New Topic</h2>
-              <button onClick={() => setIsModalOpen(false)}><X className="text-white" /></button>
+              <h2 className="text-2xl font-bold">New Topic</h2>
+              <button className="text-muted hover:text-white transition-colors" onClick={() => setIsModalOpen(false)}><X size={24} /></button>
             </div>
             <form onSubmit={handleCreateTopic} className="flex-col gap-4">
               <input 
@@ -119,9 +119,9 @@ const Brainstorming = () => {
                 placeholder="Topic Title..." 
                 value={newTopicTitle} 
                 onChange={e => setNewTopicTitle(e.target.value)} 
-                style={{ width: '100%', padding: '0.8rem', borderRadius: '8px', border: '1px solid var(--glass-border)', background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)', outline: 'none' }} 
+                className="w-full"
               />
-              <button type="submit" className="btn-primary mt-2">Create Discussion</button>
+              <button type="submit" className="btn btn-primary mt-4">Create Discussion</button>
             </form>
           </motion.div>
         </div>

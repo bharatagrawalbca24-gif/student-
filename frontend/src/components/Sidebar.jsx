@@ -16,7 +16,7 @@ const Sidebar = () => {
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <div style={{ background: 'var(--accent-primary)', padding: '8px', borderRadius: '8px', color: '#fff', display: 'flex' }}>
+        <div style={{ background: 'linear-gradient(135deg, var(--accent-primary), #db2777)', padding: '10px', borderRadius: '12px', color: '#fff', display: 'flex', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)' }}>
           <LayoutDashboard size={24} />
         </div>
         StudentHub
@@ -34,10 +34,11 @@ const Sidebar = () => {
         ))}
       </nav>
       
-      <div style={{ marginTop: 'auto', padding: '1rem', background: 'var(--glass-bg)', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-        <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>Upcoming Session</p>
-        <p style={{ color: 'var(--text-primary)', fontWeight: '500', fontSize: '0.9rem' }}>React Hooks Deep Dive</p>
-        <p style={{ fontSize: '0.8rem', color: 'var(--accent-secondary)' }}>Tomorrow, 10:00 AM</p>
+      <div className="card mt-auto p-tight pulse-glow" style={{ position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'var(--accent-secondary)' }} />
+        <p className="text-muted text-sm mb-1">Upcoming Session</p>
+        <p className="font-semibold text-primary mb-1">React Hooks Deep Dive</p>
+        <p className="text-sm" style={{ color: 'var(--accent-secondary)' }}>Tomorrow, 10:00 AM</p>
       </div>
     </aside>
   );
