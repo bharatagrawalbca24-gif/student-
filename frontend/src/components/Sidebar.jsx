@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, CalendarCheck, HelpCircle, Lightbulb, Users, BookOpen, ClipboardList } from 'lucide-react';
+import { LayoutDashboard, CalendarCheck, HelpCircle, Lightbulb, Users, BookOpen, ClipboardList, LogOut } from 'lucide-react';
+import { AuthContext } from '../context/AuthContext';
 
 const Sidebar = () => {
+  const { user, logout } = useContext(AuthContext);
   const navItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
     { path: '/attendance', label: 'Attendance', icon: <CalendarCheck size={20} /> },
@@ -34,11 +36,27 @@ const Sidebar = () => {
         ))}
       </nav>
       
-      <div className="card mt-auto p-tight pulse-glow" style={{ position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'var(--accent-secondary)' }} />
-        <p className="text-muted text-sm mb-1">Upcoming Session</p>
-        <p className="font-semibold text-primary mb-1">React Hooks Deep Dive</p>
-        <p className="text-sm" style={{ color: 'var(--accent-secondary)' }}>Tomorrow, 10:00 AM</p>
+      <div className="mt-auto flex-col gap-4">
+        <div className="card p-tight pulse-glow" style={{ position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: 'var(--accent-secondary)' }} />
+          <p className="text-muted text-sm mb-1">Upcoming Session</p>
+          <p className="font-semibold text-primary mb-1">React Hooks Deep Dive</p>
+          <p className="text-sm" style={{ color: 'var(--accent-secondary)' }}>Tomorrow, 10:00 AM</p>
+        </div>
+
+        <div className="card p-tight flex justify-between items-center" style={{ background: 'rgba(0,0,0,0.2)', border: 'none' }}>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
+              {user?.name?.charAt(0) || 'U'}
+            </div>
+            <div className="flex-col">
+              <span className="text-sm font-semibold truncate w-24">{user?.name || 'Student'}</span>
+            </div>
+          </div>
+          <button onClick={logout} className="text-muted hover:text-red-400 transition-colors p-2" title="Log out">
+            <LogOut size={18} />
+          </button>
+        </div>
       </div>
     </aside>
   );

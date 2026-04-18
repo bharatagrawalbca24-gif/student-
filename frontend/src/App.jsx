@@ -10,21 +10,14 @@ import AlumniConnect from './pages/AlumniConnect';
 import Resources from './pages/Resources';
 import Assignments from './pages/Assignments';
 import VideoRoom from './pages/VideoRoom';
+import Auth from './pages/Auth';
+import ProtectedRoute from './components/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
 
-function App() {
-  return (
-    <>
-      <div className="app-bg"></div>
-      <div className="app-container">
-        <Toaster position="top-right" toastOptions={{
-        style: {
-          background: 'var(--glass-bg)',
-          color: 'var(--text-primary)',
-          backdropFilter: 'blur(20px)',
-          border: '1px solid var(--glass-border)',
-          fontFamily: 'Inter, sans-serif'
-        }
-      }} />
+const ProtectedLayout = () => (
+  <ProtectedRoute>
+    <div className="app-bg"></div>
+    <div className="app-container">
       <Sidebar />
       <main className="main-content">
         <Routes>
@@ -38,8 +31,27 @@ function App() {
           <Route path="/meet/:roomId" element={<VideoRoom />} />
         </Routes>
       </main>
-      </div>
-    </>
+    </div>
+  </ProtectedRoute>
+);
+
+function App() {
+  return (
+    <AuthProvider>
+      <Toaster position="top-right" toastOptions={{
+        style: {
+          background: 'var(--glass-bg)',
+          color: 'var(--text-primary)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid var(--glass-border)',
+          fontFamily: 'Inter, sans-serif'
+        }
+      }} />
+      <Routes>
+        <Route path="/login" element={<Auth />} />
+        <Route path="/*" element={<ProtectedLayout />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 
