@@ -100,7 +100,15 @@ app.get('/api/sessions', async (req, res) => {
     if (isDbConnected()) {
         try {
             const sessions = await Session.find();
-            return res.json(sessions);
+            return res.json(sessions.map(s => ({
+                 id: s._id.toString(),
+                 title: s.title,
+                 type: s.type,
+                 topic: s.topic,
+                 mentor: s.mentor,
+                 date: s.date,
+                 status: s.status
+            })));
         } catch(e) { console.error(e) }
     }
     res.json(mockData.sessions);
