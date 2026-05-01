@@ -25,7 +25,7 @@ const VideoRoom = () => {
 
       <div className="glass-panel" style={{ flex: 1, overflow: 'hidden', padding: 0, display: 'flex', borderRadius: '16px' }}>
         <JitsiMeeting
-            domain="meet.jit.si"
+            domain="meet.ffmuc.net"
             roomName={`StudentDashboard_${cleanRoomId}`}
             userInfo={{
                 displayName: user?.name || 'Student'

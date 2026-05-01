@@ -37,7 +37,7 @@ app.get('/api/health', (req, res) => {
 // Auth Routes
 app.post('/api/auth/register', async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
         
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ error: 'User already exists' });
@@ -45,13 +45,13 @@ app.post('/api/auth/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
         
-        user = new User({ name, email, password: hashedPassword });
+        user = new User({ name, email, password: hashedPassword, role: role || 'student' });
         await user.save();
         
-        const payload = { user: { id: user.id } };
+        const payload = { user: { id: user.id, role: user.role } };
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
             if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+            res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
         });
     } catch (err) {
         console.error("Register Error:", err.message);
@@ -69,10 +69,10 @@ app.post('/api/auth/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: 'Invalid Credentials' });
         
-        const payload = { user: { id: user.id } };
+        const payload = { user: { id: user.id, role: user.role } };
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '5h' }, (err, token) => {
             if (err) throw err;
-            res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
+            res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
         });
     } catch (err) {
         console.error("Login Error:", err.message);
@@ -246,7 +246,7 @@ app.post('/api/topics', async (req, res) => {
     try {
         const newTopic = await Topic.create({
             title: req.body.title,
-            author: 'Anonymous',
+            author: req.body.author || 'Anonymous',
             tags: req.body.tags || []
         });
         return res.json({
@@ -255,6 +255,41 @@ app.post('/api/topics', async (req, res) => {
             author: newTopic.author,
             replies: newTopic.replies,
             tags: newTopic.tags
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+const Message = require('./models/Message');
+
+app.get('/api/topics/:id/messages', async (req, res) => {
+    try {
+        const messages = await Message.find({ topicId: req.params.id }).sort({ createdAt: 1 });
+        return res.json(messages.map(m => ({
+            id: m._id.toString(),
+            author: m.author,
+            content: m.content,
+            createdAt: m.createdAt
+        })));
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/topics/:id/messages', async (req, res) => {
+    try {
+        const newMessage = await Message.create({
+            topicId: req.params.id,
+            author: req.body.author || 'Anonymous',
+            content: req.body.content
+        });
+        await Topic.findByIdAndUpdate(req.params.id, { $inc: { replies: 1 } });
+        return res.json({
+            id: newMessage._id.toString(),
+            author: newMessage.author,
+            content: newMessage.content,
+            createdAt: newMessage.createdAt
         });
     } catch (err) {
         res.status(500).json({ error: err.message });

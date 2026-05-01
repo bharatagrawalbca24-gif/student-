@@ -5,15 +5,36 @@ import { AuthContext } from '../context/AuthContext';
 
 const Sidebar = () => {
   const { user, logout } = useContext(AuthContext);
-  const navItems = [
-    { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { path: '/attendance', label: 'Attendance', icon: <CalendarCheck size={20} /> },
-    { path: '/resources', label: 'Resources', icon: <BookOpen size={20} /> },
-    { path: '/assignments', label: 'Assignments', icon: <ClipboardList size={20} /> },
-    { path: '/sessions', label: 'Doubt Sessions', icon: <HelpCircle size={20} /> },
-    { path: '/brainstorming', label: 'Brainstorming', icon: <Lightbulb size={20} /> },
-    { path: '/alumni', label: 'Alumni Connect', icon: <Users size={20} /> },
-  ];
+  const getNavItems = () => {
+    const role = user?.role || 'student';
+    if (role === 'teacher') {
+      return [
+        { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+        { path: '/resources', label: 'Resources', icon: <BookOpen size={20} /> },
+        { path: '/assignments', label: 'Assignments', icon: <ClipboardList size={20} /> },
+        { path: '/sessions', label: 'Manage Sessions', icon: <HelpCircle size={20} /> },
+        { path: '/brainstorming', label: 'Brainstorming', icon: <Lightbulb size={20} /> },
+      ];
+    }
+    if (role === 'alumni') {
+      return [
+        { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+        { path: '/sessions', label: 'Mentorship', icon: <HelpCircle size={20} /> },
+        { path: '/brainstorming', label: 'Brainstorming', icon: <Lightbulb size={20} /> },
+      ];
+    }
+    return [
+      { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+      { path: '/attendance', label: 'Attendance', icon: <CalendarCheck size={20} /> },
+      { path: '/resources', label: 'Resources', icon: <BookOpen size={20} /> },
+      { path: '/assignments', label: 'Assignments', icon: <ClipboardList size={20} /> },
+      { path: '/sessions', label: 'Doubt Sessions', icon: <HelpCircle size={20} /> },
+      { path: '/brainstorming', label: 'Brainstorming', icon: <Lightbulb size={20} /> },
+      { path: '/alumni', label: 'Alumni Connect', icon: <Users size={20} /> },
+    ];
+  };
+
+  const navItems = getNavItems();
 
   return (
     <aside className="sidebar">
@@ -21,7 +42,7 @@ const Sidebar = () => {
         <div style={{ background: 'linear-gradient(135deg, var(--accent-primary), #db2777)', padding: '10px', borderRadius: '12px', color: '#fff', display: 'flex', boxShadow: '0 4px 15px rgba(124, 58, 237, 0.4)' }}>
           <LayoutDashboard size={24} />
         </div>
-        StudentHub
+        Gyan
       </div>
       <nav className="nav-links">
         {navItems.map((item) => (

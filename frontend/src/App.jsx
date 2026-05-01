@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import Sidebar from './components/Sidebar';
-import Dashboard from './pages/Dashboard';
+import StudentDashboard from './pages/StudentDashboard';
+import TeacherDashboard from './pages/TeacherDashboard';
+import AlumniDashboard from './pages/AlumniDashboard';
 import Attendance from './pages/Attendance';
 import DoubtSessions from './pages/DoubtSessions';
 import Brainstorming from './pages/Brainstorming';
@@ -12,7 +14,14 @@ import Assignments from './pages/Assignments';
 import VideoRoom from './pages/VideoRoom';
 import Auth from './pages/Auth';
 import ProtectedRoute from './components/ProtectedRoute';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, AuthContext } from './context/AuthContext';
+
+const RoleBasedDashboard = () => {
+  const { user } = useContext(AuthContext);
+  if (user?.role === 'teacher') return <TeacherDashboard />;
+  if (user?.role === 'alumni') return <AlumniDashboard />;
+  return <StudentDashboard />;
+};
 
 const ProtectedLayout = () => (
   <ProtectedRoute>
@@ -21,7 +30,7 @@ const ProtectedLayout = () => (
       <Sidebar />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<RoleBasedDashboard />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route path="/sessions" element={<DoubtSessions />} />
           <Route path="/brainstorming" element={<Brainstorming />} />

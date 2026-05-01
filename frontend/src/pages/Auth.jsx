@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'student' });
   const { login, register } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -20,7 +20,7 @@ const Auth = () => {
         await login(formData.email, formData.password);
         toast.success("Welcome back!");
       } else {
-        await register(formData.name, formData.email, formData.password);
+        await register(formData.name, formData.email, formData.password, formData.role);
         toast.success("Account created successfully!");
       }
       navigate('/');
@@ -45,7 +45,7 @@ const Auth = () => {
             {isLogin ? "Welcome Back" : "Create Account"}
           </h1>
           <p className="text-secondary text-sm">
-            {isLogin ? "Enter your credentials to access your dashboard" : "Join the most advanced student experience"}
+            {isLogin ? "Enter your credentials to access Gyan" : "Join Gyan, the ultimate platform"}
           </p>
         </div>
 
@@ -66,10 +66,24 @@ const Auth = () => {
                   placeholder="Full Name" 
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full"
+                  className="w-full mb-4"
                   style={{ paddingLeft: '3rem' }}
                   required={!isLogin}
                 />
+                
+                <div className="relative">
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    className="w-full"
+                    style={{ padding: '0.75rem 1rem', background: 'var(--glass-bg)', border: '1px solid var(--glass-border)', borderRadius: '8px', color: 'var(--text-primary)', appearance: 'none' }}
+                  >
+                    <option value="student">Student</option>
+                    <option value="teacher">Teacher</option>
+                    <option value="alumni">Alumni</option>
+                  </select>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
